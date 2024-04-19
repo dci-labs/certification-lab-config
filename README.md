@@ -1,16 +1,130 @@
 # Template for a new DCI OpenShift project
 
-Follow the requirements described in [the DCI
-documentation](https://docs.distributed-ci.io/dci-openshift-agent/#systems-requirements)
-to prepare the jumpbox.
+## Design proposal for DCI on OPL
+
+DCI app-agent is designed to run on a jumpbox, a RHEL machine with an NFR subscription that has access to the OCP cluster. The user running DCI should have sudo permissions locally and admin permissions on the cluster.
+
+In the case of the [OpenShift Partner Lab](https://connect.redhat.com/en/blog/introducing-openshift-partner-lab), which is ROSA (OCP on AWS), the standard installation does not create a dedicated jumpbox and proposes to use [ROSA CLI](https://docs.openshift.com/rosa/rosa_install_access_delete_clusters/rosa-sts-accessing-cluster.html) for cluster management.
+
+To meet all the requirements, we could create a local RHEL VM with an NFR subscription on the user's laptop and set it up as our jumpbox.
+
+## Start Jumpbox VM and configure RHEL subscription
+
+We're going to run a [RHEL8 VM with Vagrant](https://app.vagrantup.com/generic/boxes/rhel8) and setup an NFR or [developer](https://developers.redhat.com/articles/faqs-no-cost-red-hat-enterprise-linux#general) subscription. This is just an example, feel free to use your preferred tools to setup RHEL VM.
+
+1. Install Vagrant.
+
+```
+sudo dnf -y install vagrant
+```
+
+2. Copy Vagrantfile from this repository into your host machine.
+
+```
+$ pwd
+/home/user/Documents/rhel_vm
+$ cat Vagrantfile
+Vagrant.configure("2") do |config|
+    config.vm.box = "generic/rhel8"
+  end
+```
+
+3. Start RHEL VM and connect to it via SSH.
+
+```
+$ vagrant up
+Bringing machine 'default' up with 'libvirt' provider...
+==> default: Box 'generic/rhel8' could not be found. Attempting to find and install...
+-- snip --
+==> default: Machine booted and ready!
+$ vagrant ssh
+Register this system with Red Hat Insights: insights-client --register
+Create an account or view all your systems at https://red.ht/insights-dashboard
+[vagrant@rhel8 ~]$ cat /etc/redhat-release
+Red Hat Enterprise Linux release 8.9 (Ootpa)
+```
+
+4. Get RHEL subscription.
+
+Here you have two options:
+
+Option 1. For local tests, you have a [RH developer subscription, allowing up to 16 subscriptions for personal usage](https://developers.redhat.com/articles/faqs-no-cost-red-hat-enterprise-linux#general).
+
+Option 2. Partners should subscribe to [RHPS](https://github.com/dci-labs/dallas-internal-docs/blob/master/partner_rhel_and_ocp_subscription/access.redhat.com), previously called NFR (not-for-resale).
+To request RHPS, follow these steps on the Technology Portal:
+- Go to connect.redhat.com
+- Click on Log In Log in as Technology Partner
+- Click "My account"
+- Click on "Partner subscriptions"
+- Request Red Hat Partner Subscriptions
+- After submitting the request, wait for about 15 minutes without closing the last page. The process is fully automated, and once completed, the subscription will be listed on the [Access page](https://github.com/dci-labs/dallas-internal-docs/blob/master/partner_rhel_and_ocp_subscription/access.redhat.com).
+
+5. Activate RHEL subscription on the VM
+
+```
+[vagrant@rhel8 ~]$ subscription-manager register --username <username> --password <password> --auto-attach
+```
+
+6. Optional: How to manage your vagrant VM.
+
+```
+# to ssh-disconnect
+[vagrant@rhel8 ~]$ exit
+logout
+
+# to reconnect
+$ vagrant ssh
+
+# to stop
+$ vagrant halt
+
+# to stop and delete all traces of the vagrant machine
+$ vagrant detroy
+
+# to start the VM
+$ vagrant start
+```
+
+## Setup ROSA CLI user
+
+We're going to run DCI as a ROSA user to have both local sudo access on the VM and admin access to the cluster. Please set up the ROSA user and assign sudo privileges to it. Use this user to install DCI packages in the next chapter.
+
+## Install DCI packages
+
+1. Install DCI repository and verify its presence.
+
+```
+[vagrant@rhel8 ~]$ sudo dnf -y install https://packages.distributed-ci.io/dci-release.el8.noarch.rpm
+[vagrant@rhel8 ~]$ dnf repolist | grep dci
+```
+
+2. Install the dci-ansible package to pin the Ansible version to be 2.9.
+
+```
+$ sudo subscription-manager repos --enable ansible-2.9-for-rhel-8-x86_64-rpms
+$ sudo dnf install dci-ansible
+$ ansible --version | grep core
+```
+
+3. Now install EPEL repositories, required by dci-openshift-agent.
+
+```
+$ sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+$ sudo dnf config-manager --set-enabled epel
+$ sudo dnf config-manager --set-enabled epel-modular
+```
+
+4. Install the `dci-pipeline` and `dci-openshift-app-agent` rpm on your jumpbox.
+
+```
+$ sudo dnf install -y dci-openshift-agent
+$ sudo dnf install -y dci-openshift-app-agent
+$ sudo dnf install -y dci-pipeline
+```
 
 ## Instructions
 
-Install the `dci-pipeline` and `dci-openshift-app-agent` rpm on your jumpbox.
-
-All the files are expected to be installed into the home of the user
-running the pipelines. Just replace `config` with your own locations
-in the files (`<your company>-<lab>-config`).
+All the files are expected to be installed into the home of the user running the pipelines. Just replace `config` with your own locations in the files (`<your company>-<lab>-config`).
 
 Add the credentials for your remoteci in `~/.config/dci-pipeline/dci_credentials.yml`.
 
