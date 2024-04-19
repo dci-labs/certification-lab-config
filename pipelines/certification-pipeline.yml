@@ -1,0 +1,86 @@
+---
+
+- name: certification
+  stage: workload
+  prev_stages: [ocp-upgrade, ocp]
+  ansible_playbook: /usr/share/dci-openshift-app-agent/dci-openshift-app-agent.yml
+  ansible_cfg: ~/config/pipelines/ansible.cfg
+  ansible_inventory: ~/config/inventories/@QUEUE/@RESOURCE-workload.yml
+  dci_credentials: ~/.config/dci-pipeline/dci_credentials.yml
+  ansible_extravars:
+    dci_cache_dir: ~/dci-cache-dir
+    dci_config_dir: ~/config/ocp-workload
+    dci_gits_to_components:
+      - ~/config
+    dci_local_log_dir: ~/upload-errors
+    dci_tags: ["certification"]
+
+    # credentials for the registry and Pyxis API
+    partner_creds: "/path/to/config.json"
+    pyxis_apikey_path: "path/to/file/with/pyxis-apikey.txt"
+    organization_id: "MY_NICE_ORG_ID"
+
+    # run preflight check container tests,
+    # create cert project, and submit tests results
+    preflight_containers_to_certify:
+      - container_image: "quay.io/orga1/repo1@sha256:digest1"
+        create_container_project: true
+        short_description: "Here is the default 50+ characters image description"
+        pyxis_product_lists:
+          - "XXXXXXXXXXXXXXXXXXXXXXXX"
+          - "YYYYYYYYYYYYYYYYYYYYYYYY"
+      - container_image: "quay.io/orga2/repo2@sha256:digest2"
+        create_container_project: true
+        short_description: "Here is the default 50+ characters image description"
+        pyxis_product_lists:
+          - "XXXXXXXXXXXXXXXXXXXXXXXX"
+      - container_image: "quay.io/orga3/repo3@sha256:digest3"
+        pyxis_container_identifier: "ZZZZZZZZZZZZZZZZZZZZZZZ"
+
+    # run helmchart tests and generate report.yaml
+    do_chart_verifier: true
+    partner_name: "MyNicePartnerName"
+    partner_email: "example@example.me"
+    dci_charts:
+      - name: "my_nice_chart"
+        chart_file: "path/to/my-nice-chart-1.2.3.tgz"
+        deploy_chart: true
+
+    # create cert project for helm charts
+    helmchart_to_certify:
+      - repository: "https://github.com/orga/chartrepo"
+        short_description: "Here is the default 50+ characters image description"
+        chart_name: "my_nice_chart"
+        create_helmchart_project: true
+        pyxis_product_lists:
+          - "YYYYYYYYYYYYYYYYYYYYYYYY"
+
+    # create cnf cert project
+    cnf_to_certify:
+      - cnf_name: "my-test23.5 OCP4.12.49"
+        pyxis_product_lists:
+          - "YYYYYYYYYYYYYYYYYYYYYYYY"
+
+    # update the cert projects with the marketing info
+    cert_settings:
+      # container
+      auto_publish: false
+      build_categories: "Standalone image"
+      registry_override_instruct: "These are instructions of how to override settings"
+      email_address: "example@example.com"
+      application_categories: "Networking"
+      os_content_type: "Red Hat Universal Base Image (UBI)"
+      privileged: false
+      release_category: "Generally Available"
+      repository_description: "This is a test repository"
+      # helmchart
+      github_usernames: "my_nice_gh_username"
+      long_description: "This is a long 100+ characters description about this sample chart"
+      distribution_method: "undistributed"
+      distribution_instructions: "Instructions how to get this helm-chart"
+
+  use_previous_topic: true
+  inputs:
+    kubeconfig: kubeconfig_path
+
+...
