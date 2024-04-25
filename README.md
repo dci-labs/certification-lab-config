@@ -114,7 +114,12 @@ $ sudo dnf config-manager --set-enabled epel
 $ sudo dnf config-manager --set-enabled epel-modular
 ```
 
-4. Install the `dci-pipeline` and `dci-openshift-app-agent` rpm on your jumpbox.
+4. Install the Ansible runner repository.
+```
+$ sudo dnf config-manager --add-repo https://releases.ansible.com/ansible-runner/ansible-runner.el8.repo
+```
+
+5. Install the `dci-pipeline` and `dci-openshift-app-agent` rpm on your jumpbox.
 
 ```
 $ sudo dnf install -y dci-openshift-agent
