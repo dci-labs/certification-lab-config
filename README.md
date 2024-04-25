@@ -26,6 +26,7 @@ $ pwd
 $ cat Vagrantfile
 Vagrant.configure("2") do |config|
     config.vm.box = "generic/rhel8"
+    config.vm.network "public_network"
   end
 ```
 
