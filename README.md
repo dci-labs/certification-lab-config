@@ -126,9 +126,8 @@ $ sudo dnf install -y dci-pipeline
 
 All the files are expected to be installed into the home of the user running the pipelines. Just replace `config` with your own locations in the files (`<your company>-<lab>-config`).
 
-Add the credentials for your remoteci in `~/.config/dci-pipeline/dci_credentials.yml`.
 
-Then create the required directories and files for DCI to work:
+Create the required directories and files for DCI to work:
 
 ```ShellSession
 $ cd
@@ -139,6 +138,9 @@ PIPELINES_DIR=$HOME/<your company>-<lab>-config/pipelines
 DEFAULT_QUEUE=pool
 EOF
 ```
+
+Add the credentials for your remoteci in `~/.config/dci-pipeline/dci_credentials.yml`.
+This file can be downloaded in [www.distributed-ci.io](https://www.distributed-ci.io/remotecis)
 
 You can now customize the hooks, pipelines and inventories files for
 your own needs following [the DCI documentation](https://docs.distributed-ci.io/).
