@@ -4,7 +4,5 @@ all:
   hosts:
     jumphost:
       ansible_connection: local
-  vars:
-    kubeconfig_path: "{{ lookup('env', 'HOME') }}/clusterconfigs-cluster1/kubeconfig"
 
 ...

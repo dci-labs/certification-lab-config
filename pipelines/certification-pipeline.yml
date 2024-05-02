@@ -1,19 +1,21 @@
 ---
 
 - name: certification
+  topic: OCP-4.15 
   stage: workload
-  prev_stages: [ocp-upgrade, ocp]
   ansible_playbook: /usr/share/dci-openshift-app-agent/dci-openshift-app-agent.yml
-  ansible_cfg: ~/config/pipelines/ansible.cfg
-  ansible_inventory: ~/config/inventories/@QUEUE/@RESOURCE-workload.yml
+  ansible_cfg: ~/certification-lab-config/pipelines/ansible.cfg
+  ansible_inventory: ~/certification-lab-config/inventories/@QUEUE/@RESOURCE-workload.yml
   dci_credentials: ~/.config/dci-pipeline/dci_credentials.yml
   ansible_extravars:
     dci_cache_dir: ~/dci-cache-dir
-    dci_config_dir: ~/config/ocp-workload
+    dci_config_dir: ~/certification-lab-config/ocp-workload
     dci_gits_to_components:
       - ~/config
     dci_local_log_dir: ~/upload-errors
     dci_tags: ["certification"]
+    
+    kubeconfig_path: ~/@RESOURCE/auth/kubeconfig
 
     # credentials for the registry and Pyxis API
     partner_creds: "/path/to/config.json"
@@ -78,9 +80,5 @@
       long_description: "This is a long 100+ characters description about this sample chart"
       distribution_method: "undistributed"
       distribution_instructions: "Instructions how to get this helm-chart"
-
-  use_previous_topic: true
-  inputs:
-    kubeconfig: kubeconfig_path
 
 ...

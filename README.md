@@ -129,17 +129,17 @@ $ sudo dnf install -y dci-pipeline
 
 ## Instructions
 
-All the files are expected to be installed into the home of the user running the pipelines. Just replace `config` with your own locations in the files (`<your company>-<lab>-config`).
+All the files are expected to be installed into the home of the user running the pipelines..
 
 
 Create the required directories and files for DCI to work:
 
 ```ShellSession
 $ cd
-$ git clone git@github.com:dci-labs/<your company>-<lab>-config.git
+$ git clone git@github.com:dci-labs/certification-lab-config.git
 $ mkdir -p dci-cache-dir upload-errors .config/dci-pipeline
 $ cat > .config/dci-pipeline/config <<EOF
-PIPELINES_DIR=$HOME/<your company>-<lab>-config/pipelines
+PIPELINES_DIR=$HOME/certification-lab-config/pipelines
 DEFAULT_QUEUE=pool
 EOF
 ```
@@ -164,18 +164,23 @@ $ dci-queue add-resource pool cluster1
 If you don't want to use `dci-queue`, just edit the the pipeline files
 to not use dynamic paths.
 
-## Launching a pipeline
+## Kubeconfig
 
-For the full pipeline (OCP + workload):
-
+DCI uses kubeconfig to execute workload and certification. 
+If you are using an OCP cluster already deployed(ROSA, ARO) you maybe only have credentials.
+So after executed the `oc login` command on your machine, you can get it in from your $HOME:
 ```ShellSession
-$ dci-pipeline-schedule ocp-4.12 workload
+$ oc login
+$ mkdir -p ~/cluster1/auth
+$ cp ~/.kube/config ~/cluster1/auth/kubeconfig
 ```
 
-For only the workload:
+## Launching a pipeline
+
+Running the workload:
 
 ```ShellSession
-$ KUBECONFIG=$KUBECONFIG dci-pipeline-schedule workload
+$ dci-pipeline-schedule workload
 ```
 
 ## Testing a PR
@@ -183,13 +188,13 @@ $ KUBECONFIG=$KUBECONFIG dci-pipeline-schedule workload
 For testing a PR with the full pipeline:
 
 ```ShellSession
-$ dci-pipeline-check https://github.com/dci-labs/<your company>-<lab>-config/pull/1 ocp-4.12 workload
+$ dci-pipeline-check https://github.com/dci-labs/certification-lab-config/pull/1 workload
 ```
 
 Or only with the workload:
 
 ```ShellSession
-$ dci-pipeline-check https://github.com/dci-labs/<your company>-<lab>-config/pull/1 $KUBECONFIG workload
+$ dci-pipeline-check https://github.com/dci-labs/certification-lab-config/pull/1 workload
 ```
 
 # Certification with DCI
