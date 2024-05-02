@@ -1,6 +1,7 @@
 ---
 
 - name: ocp-workload
+  topic: OCP-4.15
   stage: workload
   prev_stages: [ocp-upgrade, ocp]
   ansible_playbook: /usr/share/dci-openshift-app-agent/dci-openshift-app-agent.yml
@@ -15,6 +16,7 @@
       - ~/config
     dci_local_log_dir: ~/upload-errors
     dci_tags: []
-  use_previous_topic: true
+    preflight_containers_to_certify:
+      - container_image: "quay.io/rh-nfv-int/trex-operator:v0.2.17"
 
 ...
