@@ -140,7 +140,7 @@ EOF
 ```
 
 Add the credentials for your remoteci in `~/.config/dci-pipeline/dci_credentials.yml`.
-This file can be downloaded in [www.distributed-ci.io](https://www.distributed-ci.io/remotecis)
+The remoteci credentials can be downloaded from [www.distributed-ci.io](https://www.distributed-ci.io/remotecis)
 
 You can now customize the hooks, pipelines and inventories files for
 your own needs following [the DCI documentation](https://docs.distributed-ci.io/).
