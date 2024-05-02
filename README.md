@@ -150,10 +150,7 @@ The remoteci credentials can be downloaded from [www.distributed-ci.io](https://
 You can now customize the hooks, pipelines and inventories files for
 your own needs following [the DCI documentation](https://docs.distributed-ci.io/).
 
-By default 2 job descriptions (`ocp-4.12` and `workload`) and their
-associated hooks are present in the template.
-
-The inventories are expecting `dci-queue` to be used with the
+The inventories and pipelines are expecting `dci-queue` to be used with the
 following settings:
 
 ```ShellSession
@@ -185,13 +182,7 @@ $ dci-pipeline-schedule workload
 
 ## Testing a PR
 
-For testing a PR with the full pipeline:
-
-```ShellSession
-$ dci-pipeline-check https://github.com/dci-labs/certification-lab-config/pull/1 workload
-```
-
-Or only with the workload:
+For testing a PR with the workload:
 
 ```ShellSession
 $ dci-pipeline-check https://github.com/dci-labs/certification-lab-config/pull/1 workload
