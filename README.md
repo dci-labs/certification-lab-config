@@ -22,14 +22,14 @@ Here you have two options:
 
 Option 1. For local tests, you have a [RH developer subscription, allowing up to 16 subscriptions for personal usage](https://developers.redhat.com/articles/faqs-no-cost-red-hat-enterprise-linux#general).
 
-Option 2. Partners should subscribe to [RHPS](https://github.com/dci-labs/dallas-internal-docs/blob/master/partner_rhel_and_ocp_subscription/access.redhat.com), previously called NFR (not-for-resale).
+Option 2. Partners should subscribe to [RHPS](access.redhat.com), previously called NFR (not-for-resale).
 To request RHPS, follow these steps on the Technology Portal:
 - Go to connect.redhat.com
 - Click on Log In Log in as Technology Partner
 - Click "My account"
 - Click on "Partner subscriptions"
 - Request Red Hat Partner Subscriptions
-- After submitting the request, wait for about 15 minutes without closing the last page. The process is fully automated, and once completed, the subscription will be listed on the [Access page](https://github.com/dci-labs/dallas-internal-docs/blob/master/partner_rhel_and_ocp_subscription/access.redhat.com).
+- After submitting the request, wait for about 15 minutes without closing the last page. The process is fully automated, and once completed, the subscription will be listed on the [Access page](access.redhat.com).
 
 2. Clone the current repository:
 
